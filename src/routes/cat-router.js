@@ -1,23 +1,11 @@
 import express from 'express';
 import multer from 'multer';
+import { createThumbnail } from '../middlewares.js';
 import { postCat } from '../controllers/cat-controller.js';
 
 const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
 
-// Set up Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-});
-
-const upload = multer({ storage: storage });
-
-// Routes
-router.post('/cat', upload.single('file'), postCat);
+router.post('/cat', upload.single('file'), createThumbnail, postCat);
 
 export default router;

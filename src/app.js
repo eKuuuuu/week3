@@ -7,60 +7,6 @@ app.use('/api/v1', catRouter);
 
 export { app };
 
-const catItems = [
-    {
-        cat_id: 9592,
-        cat_name: 'Frank',
-        weight: 11,
-        owner: 3609,
-        filename: 'f3dbafakjsdfhg4',
-        birthdate: '2021-10-12',
-    },
-    {
-        cat_id: 9590,
-        cat_name: 'Mittens',
-        weight: 8,
-        owner: 3602,
-        filename: 'f3dasdfkjsdfhgasdf',
-        birthdate: '2021-10-12',
-    },
-];
-
-const userItems = [
-    {
-        user_id: 3609,
-        name: 'John Doe',
-        username: 'johndoe',
-        email: 'john@metropolia.fi',
-        role: 'user',
-        password: 'password',
-    },
-    {
-        user_id: 3610,
-        name: 'Jane Smith',
-        username: 'janesmith',
-        email: 'jane@metropolia.fi',
-        role: 'admin',
-        password: 'password123',
-    },
-    {
-        user_id: 3611,
-        name: 'Alice Johnson',
-        username: 'alicej',
-        email: 'alice@metropolia.fi',
-        role: 'user',
-        password: 'alicepass',
-    },
-    {
-        user_id: 3612,
-        name: 'Bob Brown',
-        username: 'bobbrown',
-        email: 'bob@metropolia.fi',
-        role: 'user',
-        password: 'bobpassword',
-    },
-];
-
 // Helper functions
 const listAllCats = () => catItems;
 const findCatById = (id) => catItems.find((item) => item.cat_id == id);
@@ -79,6 +25,9 @@ const addUser = (user) => {
     userItems.unshift({ user_id: newId, name, username, email, role, password });
     return { user_id: newId };
 }
+
+// Use the addCat function in your route
+app.post('/add-cat', addCat);
 
 // Routes
 app.get('/api/v1/cat', (req, res) => {
