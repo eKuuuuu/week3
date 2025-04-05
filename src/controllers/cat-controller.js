@@ -1,57 +1,26 @@
-import {
-    addCat,
-    findCatById,
-    listAllCats,
-    modifyCat,
-    removeCat,
-} from '../models/cat-model.js';
+import { deleteCatModel, getCatById, putCatModel } from '../models/cat-model.js';
 
-const getCat = async (req, res) => {
-    res.json(await listAllCats());
-};
+export const deleteCat = async (req, res) => {
+    const user = res.locals.user;
+    const catId = req.params.id;
 
-const getCatById = async (req, res) => {
-    const cat = await findCatById(req.params.id);
-    if (cat) {
-        res.json(cat);
-    } else {
-        res.sendStatus(404);
+    try {
+        await deleteCatModel(catId, user);
+        res.status(200).json({ message: 'Cat deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error deleting cat', error: err.message });
     }
 };
 
-const postCat = async (req, res) => {
-    req.body.filename = req.file.filename;
-    const result = await addCat(req.body);
-    if (result.cat_id) {
-        res.status(201);
-        res.json(result);
-    } else {
-        res.sendStatus(400);
+export const putCat = async (req, res) => {
+    const user = res.locals.user;
+    const catId = req.params.id;
+    const catData = req.body;
+
+    try {
+        await putCatModel(catId, catData, user);
+        res.status(200).json({ message: 'Cat updated successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating cat', error: err.message });
     }
 };
-
-const putCat = async (req, res) => {
-    const result = await modifyCat(req.body, req.params.id);
-    if (result.message) {
-        res.status(200);
-        res.json(result);
-    } else {
-        res.sendStatus(404);
-    }
-};
-
-const deleteCat = async (req, res) => {
-    const result = await removeCat(req.params.id);
-    if (result.message) {
-        res.status(200);
-        res.json(result);
-    } else {
-        res.sendStatus(404);
-    }
-};
-
-const getCatByOwnerId = async (req, res) => {
-    // TODO: Implement this function
-};
-
-export {getCat, getCatById, postCat, putCat, deleteCat, getCatByOwnerId};

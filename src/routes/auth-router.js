@@ -1,5 +1,5 @@
 import {authUser, getMe} from '../controllers/auth-controller.js';
-import {authenticateToken} from 'middlewares.js';
+import {authenticateToken} from 'src/middlewares/middlewares.js';
 import express from 'express';
 
 const authRouter = express.Router();
