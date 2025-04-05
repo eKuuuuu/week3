@@ -8,11 +8,15 @@ export const authorizeCatOwner = async (req, res, next) => {
         return next();
     }
 
-    const cat = await getCatById(catId);
-    if (cat.ownerId !== user.id) {
-        return res.status(403).json({ message: 'Forbidden: You are not the owner of this cat' });
+    try {
+        const cat = await getCatById(catId);
+        if (cat.ownerId !== user.id) {
+            return res.status(403).json({ message: 'Forbidden: You are not the owner of this cat' });
+        }
+        next();
+    } catch (err) {
+        next(err);
     }
-    next();
 };
 
 export const authorizeUser = (req, res, next) => {

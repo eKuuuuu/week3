@@ -1,32 +1,28 @@
-import {
-    deleteCat,
-    getCat,
-    getCatById,
-    postCat,
-    putCat,
-} from '../controllers/cat-controller.js';
-
-import { createThumbnail } from '../middlewares/middlewares.js';
-import { authorizeCatOwner } from '../middlewares/authorization.js';
 import express from 'express';
-import multer from 'multer';
+import { validateCat, validateCatIdParam } from '../middlewares/validation.js';
+import { putCatModel, deleteCatModel } from '../models/cat-model.js';
+import { errorHandler } from '../middlewares/error-handler.js';
 
-const catRouter = express.Router();
+const router = express.Router();
 
-const upload = multer({ dest: 'uploads/' });
-
-catRouter
-    .route('/')
-    .get(getCat)
-    .post(upload.single('file'), createThumbnail, postCat);
-
-catRouter.route('/:id')
-    .get(getCatById)
-    .put(authorizeCatOwner, putCat)
-    .delete(authorizeCatOwner, deleteCat);
-
-catRouter.route('/owner/:id').get((req, res) => {
-    res.send('Get owner by ID');
+router.put('/:id', validateCatIdParam, validateCat, async (req, res, next) => {
+    try {
+        await putCatModel(req.params.id, req.body, res.locals.user);
+        res.status(200).json({ message: 'Cat updated successfully' });
+    } catch (err) {
+        next(err);
+    }
 });
 
-export default catRouter;
+router.delete('/:id', validateCatIdParam, async (req, res, next) => {
+    try {
+        await deleteCatModel(req.params.id, res.locals.user);
+        res.status(200).json({ message: 'Cat deleted successfully' });
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.use(errorHandler);
+
+export default router;

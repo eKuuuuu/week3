@@ -1,25 +1,28 @@
-// src/routes/user-router.js
-import {
-    getUser,
-    getUserById,
-    postUser,
-    putUser,
-    deleteUser,
-} from '../controllers/user-controller.js';
-
-import { authorizeUser } from '../middlewares/authorization.js';
 import express from 'express';
+import { validateUser, validateUserIdParam } from '../middlewares/validation.js';
+import { putUserModel, deleteUserModel } from '../models/user-model.js';
+import { errorHandler } from '../middlewares/error-handler.js';
 
-const userRouter = express.Router();
+const router = express.Router();
 
-userRouter
-    .route('/')
-    .get(getUser)
-    .post(postUser);
+router.put('/:id', validateUserIdParam, validateUser, async (req, res, next) => {
+    try {
+        await putUserModel(req.params.id, req.body);
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (err) {
+        next(err);
+    }
+});
 
-userRouter.route('/:id')
-    .get(getUserById)
-    .put(authorizeUser, putUser)
-    .delete(deleteUser);
+router.delete('/:id', validateUserIdParam, async (req, res, next) => {
+    try {
+        await deleteUserModel(req.params.id);
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (err) {
+        next(err);
+    }
+});
 
-export default userRouter;
+router.use(errorHandler);
+
+export default router;

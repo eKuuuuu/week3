@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export const authenticate = (req, res, next) => {
-    const token = req.header('Authorization').replace('Bearer ', '');
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized: No token provided' });
     }
@@ -11,6 +11,6 @@ export const authenticate = (req, res, next) => {
         res.locals.user = decoded;
         next();
     } catch (err) {
-        res.status(401).json({ message: 'Unauthorized: Invalid token' });
+        next(err);
     }
 };
