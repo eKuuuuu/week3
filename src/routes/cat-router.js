@@ -6,13 +6,13 @@ import {
     putCat,
 } from '../controllers/cat-controller.js';
 
-import createThumbnail from '../../middlewares.js';
+import {createThumbnail} from "../../middlewares.js";
 import express from 'express';
 import multer from 'multer';
 
 const catRouter = express.Router();
 
-const upload = multer({dest: 'uploads/'});
+const upload = multer({ dest: 'uploads/' });
 
 catRouter
     .route('/')
@@ -21,7 +21,8 @@ catRouter
 
 catRouter.route('/:id').get(getCatById).put(putCat).delete(deleteCat);
 
-// TODO: Implement this route
-catRouter.route('/owner/:id').get();
+catRouter.route('/owner/:id').get((req, res) => {
+    res.send('Get owner by ID');
+});
 
 export default catRouter;
