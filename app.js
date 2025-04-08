@@ -3,6 +3,7 @@ const hostname = '127.0.0.1';
 const app = express();
 const port = 3000;
 
+// added a comment to app.js for testing
 // Serve static files from the 'public' folder
 app.use('/public', express.static('public'));
 
